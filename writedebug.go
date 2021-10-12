@@ -58,13 +58,26 @@ func PrintWrite(w interface{}, order binary.ByteOrder, data interface{}, format 
 			return err
 		}
 
-		for _, b := range buf.Bytes() {
+		initialIndex := int64(-1)
+		srcOut := []byte{}
+
+		for i := 0; i < len(buf.Bytes()); i++ {
 			index, ab, err := out.CompareRead()
+			if initialIndex == -1 {
+				initialIndex = index
+			}
 			if err != nil {
 				return fmt.Errorf("compareread: %w", err)
 			}
-			if ab != b {
-				return fmt.Errorf("compare at %d expected 0x%x, got 0x%x", index, ab, b)
+			srcOut = append(srcOut, ab)
+		}
+		err = fmt.Errorf("compare at %d expected 0x%x, got 0x%x", initialIndex, buf.Bytes(), srcOut)
+		for _, b := range buf.Bytes() {
+			for _, ab := range srcOut {
+				if ab == b {
+					continue
+				}
+				return err
 			}
 		}
 
