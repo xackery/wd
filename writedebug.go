@@ -71,7 +71,7 @@ func PrintWrite(w interface{}, order binary.ByteOrder, data interface{}, format 
 			}
 			srcOut = append(srcOut, ab)
 		}
-		err = fmt.Errorf("compare at %d expected 0x%x, got 0x%x", initialIndex, buf.Bytes(), srcOut)
+		err = fmt.Errorf("compare at %d expected 0x%x (%d), got 0x%x (%d)", initialIndex, buf.Bytes(), buf.Bytes(), srcOut, srcOut)
 		for _, b := range buf.Bytes() {
 			for _, ab := range srcOut {
 				if ab == b {
